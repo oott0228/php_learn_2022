@@ -1,17 +1,18 @@
 <?php
 
-$id = '1';
-$question ='ああああああお';
+// 指定されたファイルがないとエラーになり停止する
+require __DIR__. '/../lib/functions.php';
 
-$answers = [
-  'A' => 'あああ',
-  'B' => 'いいい',
-  'C' => 'ううう',
-  'D' => 'えええ',
-];
+$id = '3';
 
-$correctAnswer = 'B';
+$data = fetchById($id);
+
+$formattedData = generateFormattedData($data);
+
+$question = $formattedData['question'];
+$answers = $formattedData['answers'];
+$correctAnswer = $formattedData['correctAnswer'];
 $correctAnswerValue = $answers[$correctAnswer];
-$explanation = '解説解説';
+$explanation = $formattedData['explanation'];
 
 include __DIR__.'/../template/question.tpl.php';
