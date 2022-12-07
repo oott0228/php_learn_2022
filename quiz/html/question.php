@@ -1,18 +1,21 @@
 <?php
-
 // 指定されたファイルがないとエラーになり停止する
 require __DIR__. '/../lib/functions.php';
 
-$id = '3';
+$id = escape($_GET['id'] ?? ''); // null合体演算子
 
 $data = fetchById($id);
 
+if (!$data) {
+  error404();
+}
+
 $formattedData = generateFormattedData($data);
 
-$question = $formattedData['question'];
-$answers = $formattedData['answers'];
-$correctAnswer = $formattedData['correctAnswer'];
-$correctAnswerValue = $answers[$correctAnswer];
-$explanation = $formattedData['explanation'];
+$assignData = [
+  'id' => $formattedData['id'],
+  'question' => $formattedData['question'],
+  'answers' => $formattedData['answers'],
+];
 
-include __DIR__.'/../template/question.tpl.php';
+loadTemplate('question', $assignData);

@@ -1,12 +1,45 @@
 <?php
 
+function loadTemplate($filename, array $assignData = []) {
+  extract($assignData);
+  include __DIR__ . '/../template/'. $filename . '.tpl.php';
+}
+
+function error404() {
+  // HTTPレスポンスのヘッダを404にする
+  header('HTTP/1.1 404 Not Found');
+
+  // レスポンスの種類を指定する
+  header('Content-Type: text/html; charset=UTF-8');
+
+  loadTemplate('404');
+
+  exit(0);
+}
+
+function fetchAll()
+{
+  // ファイルを開く
+  $handler = fopen(__DIR__ . '/data.csv', 'r');
+  // データを取得
+  $questions = [];
+  while ($row = fgetcsv($handler)) {
+    // $rowが正しいかチェック
+    if (isDataRow($row)) {
+      $questions[] = $row;
+    }
+  }
+  // ファイルを閉じる
+  fclose($handler);
+  // データを返す
+  return $questions;
+}
+
 function fetchById($id) {
   // ファイルを開く
   $handler = fopen(__DIR__.'/data.csv', 'r');
-
   // データを取得
   $question = [];
-
   while ($row = fgetcsv($handler)) {
     // $rowが正しいかチェック
     if (isDataRow($row)) {
@@ -16,11 +49,8 @@ function fetchById($id) {
       }
     }
   }
-  
-
   // ファイルを閉じる
   fclose($handler);
-
   // データを返す
   return $question;
 }
@@ -32,7 +62,6 @@ function fetchById($id) {
  * 
  * @return bool クイズのデータの場合はtrue、クイズのデータでなければfalse
  */
-
 function isDataRow(array $row) {
   // データの項目数が足りているか判定
   if (count($row) !== 8) {
@@ -71,7 +100,6 @@ function isDataRow(array $row) {
  * 
  * @return array 整形したクイズの情報
  */
-
 function generateFormattedData($data) {
 
   // 構造化した配列を作成する
